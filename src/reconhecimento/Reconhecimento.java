@@ -39,7 +39,7 @@ import org.bytedeco.javacv.OpenCVFrameGrabber;
 
 /**
  *
- * @author Lukas
+ * @author lukascouto
  */
 public class Reconhecimento {
 
@@ -55,7 +55,7 @@ public class Reconhecimento {
         OpenCVFrameConverter.ToMat converteMat = new OpenCVFrameConverter.ToMat();
         OpenCVFrameGrabber camera = new OpenCVFrameGrabber(0);
 
-        //String[] pessoas = {"", "", "Olga", "Lukas"};
+        //String[] pessoas = {"", "", "", ""};
         camera.start();
 
         CascadeClassifier detectorFace = new CascadeClassifier("src/recursos/haarcascade-frontalface-alt.xml");
@@ -82,10 +82,10 @@ public class Reconhecimento {
                 Mat imagemCinza = new Mat();
                 cvtColor(imagemColorida, imagemCinza, COLOR_BGRA2GRAY);
                 RectVector facesDetectadas = new RectVector();
-                detectorFace.detectMultiScale(imagemCinza, facesDetectadas, 1.1, 2, 0, new Size(100, 100), new Size(500, 500));
+                detectorFace.detectMultiScale(imagemCinza, facesDetectadas, 1.1, 1, 0, new Size(150, 150), new Size(500, 500));
                 for (int i = 0; i < facesDetectadas.size(); i++) {
                     Rect dadosFace = facesDetectadas.get(i);
-                    rectangle(imagemColorida, dadosFace, new Scalar(0, 255, 0, 4));
+                    rectangle(imagemColorida, dadosFace, new Scalar(219, 152, 52, 0));
                     Mat faceCapturada = new Mat(imagemCinza, dadosFace);
                     resize(faceCapturada, faceCapturada, new Size(160, 160));
 
@@ -106,7 +106,7 @@ public class Reconhecimento {
                     }
                     int x = Math.max(dadosFace.tl().x() - 10, 0);
                     int y = Math.max(dadosFace.tl().y() - 10, 0);
-                    putText(imagemColorida, nome, new Point(x, y), FONT_HERSHEY_PLAIN, 1.4, new Scalar(0, 255, 0, 4));
+                    putText(imagemColorida, nome, new Point(x, y), FONT_HERSHEY_PLAIN, 1.4, new Scalar(219, 152, 52, 0));
                 }
                 if (cFrame.isVisible()) {
                     cFrame.showImage(frameCapturado);

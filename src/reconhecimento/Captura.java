@@ -1,6 +1,8 @@
 package reconhecimento;
 
 import java.awt.event.KeyEvent;
+import org.bytedeco.javacpp.opencv_core;
+import static org.bytedeco.javacpp.opencv_core.FONT_HERSHEY_PLAIN;
 import org.bytedeco.javacpp.opencv_core.Mat;
 import org.bytedeco.javacpp.opencv_core.Rect;
 import org.bytedeco.javacpp.opencv_core.RectVector;
@@ -36,6 +38,7 @@ public class Captura {
         int numeroAmostras = 5;
         int amostra = 1;
         
+        
         while ((frameCapturado = camera.grab()) != null) {
             imagemColorida = converteMat.convert(frameCapturado);
             Mat imagemCinza = new Mat();
@@ -47,7 +50,13 @@ public class Captura {
             }
             for (int i=0; i < facesDetectadas.size(); i++) {
                 Rect dadosFace = facesDetectadas.get(0);
-                rectangle(imagemColorida, dadosFace, new Scalar(0,0,255, 0));
+                rectangle(imagemColorida, dadosFace, new Scalar(219, 152, 52, 0));
+                // coloca texto
+                String contaCaptura = "Pessoa: "+nome+" | Captura: "+(amostra-1)+"/"+numeroAmostras;
+                int x = Math.max(dadosFace.tl().x() - 10, 0);
+                int y = Math.max(dadosFace.tl().y() - 10, 0);
+                putText(imagemColorida, contaCaptura, new opencv_core.Point(x, y), FONT_HERSHEY_PLAIN, 1.4, new Scalar(219, 152, 52, 0));
+                // fim do texto
                 Mat faceCapturada = new Mat(imagemCinza, dadosFace);
                 resize(faceCapturada, faceCapturada, new Size(160,160));
                 if (tecla == null) {

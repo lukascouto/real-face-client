@@ -5,26 +5,15 @@
  */
 package connection;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import java.awt.List;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import model.PessoaModel;
-import org.apache.commons.io.IOUtils;
 import org.bytedeco.javacv.FrameGrabber;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import reconhecimento.ReconhecimentoFacialFacade;
 
 /**

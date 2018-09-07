@@ -20,10 +20,10 @@ public class Principal {
         ReconhecimentoFacialFacade reconhecimentoFacialFacade = new ReconhecimentoFacialFacade();
         //reconhecimentoFacialFacade.captura();
         //reconhecimentoFacialFacade.treinar();
-        //reconhecimentoFacialFacade.salvarPessoa();
+        reconhecimentoFacialFacade.salvarPessoa();
         //reconhecimentoFacialFacade.buscarPessoa();
         //reconhecimentoFacialFacade.salvarClassificador();
-        reconhecimentoFacialFacade.reconhecerWebCam();
+        //reconhecimentoFacialFacade.reconhecerWebCam();
          
     }
 }
