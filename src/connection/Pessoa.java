@@ -22,7 +22,7 @@ import reconhecimento.ReconhecimentoFacialFacade;
  */
 public class Pessoa {
 
-    public void salvarPessoa(String tipoCaptura) throws MalformedURLException, IOException, FrameGrabber.Exception, InterruptedException {
+    public void salvarPessoa(String tipoCaptura) throws MalformedURLException, IOException, FrameGrabber.Exception, InterruptedException, Exception {
 
         ReconhecimentoFacialFacade reconhecimentoFacialFacade = new ReconhecimentoFacialFacade();
 
@@ -51,7 +51,7 @@ public class Pessoa {
         if (tipoCaptura.equalsIgnoreCase("webcam")) {
             reconhecimentoFacialFacade.capturaWebCam(nome, idPessoa);
         } else if (tipoCaptura.equalsIgnoreCase("cameraip")) {
-            reconhecimentoFacialFacade.capturaCameraIp();
+            reconhecimentoFacialFacade.capturaCameraIp(nome, idPessoa);
         } else {
             System.out.println("Informe um parâmetro válido em 'salvarPessoa'.");
             System.out.println("Os parâmetros aceitos são 'webcam' ou 'cameraip'.");

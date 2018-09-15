@@ -15,15 +15,13 @@ import org.bytedeco.javacv.FrameGrabber;
  */
 public class Principal {
 
-    public static void main(String args[]) throws FrameGrabber.Exception, InterruptedException, MalformedURLException, IOException {
+    public static void main(String args[]) throws FrameGrabber.Exception, InterruptedException, MalformedURLException, IOException, Exception {
 
-        ReconhecimentoFacialFacade reconhecimentoFacialFacade = new ReconhecimentoFacialFacade();
-        //reconhecimentoFacialFacade.captura();
+        ReconhecimentoFacialFacade reconhecimentoFacialFacade = new ReconhecimentoFacialFacade(); 
+        //reconhecimentoFacialFacade.salvarPessoa();
         //reconhecimentoFacialFacade.treinar();
-        reconhecimentoFacialFacade.salvarPessoa();
-        //reconhecimentoFacialFacade.buscarPessoa();
         //reconhecimentoFacialFacade.salvarClassificador();
         //reconhecimentoFacialFacade.reconhecerWebCam();
-         
+        reconhecimentoFacialFacade.reconhecerCameraIp();     
     }
 }

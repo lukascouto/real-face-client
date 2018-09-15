@@ -12,6 +12,7 @@ import connection.Usuario;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import model.PessoaModel;
 import org.bytedeco.javacpp.DoublePointer;
 import org.bytedeco.javacpp.IntPointer;
@@ -34,6 +35,7 @@ import org.bytedeco.javacpp.opencv_objdetect.CascadeClassifier;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.IPCameraFrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameConverter;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 
@@ -74,6 +76,88 @@ public class Reconhecimento {
             reconhecedor.setThreshold(70);
 
             CanvasFrame cFrame = new CanvasFrame("Reconhecimento", CanvasFrame.getDefaultGamma() / camera.getGamma());
+            Frame frameCapturado = null;
+            Mat imagemColorida = new Mat();
+
+            while ((frameCapturado = camera.grab()) != null) {
+                imagemColorida = converteMat.convert(frameCapturado);
+                Mat imagemCinza = new Mat();
+                cvtColor(imagemColorida, imagemCinza, COLOR_BGRA2GRAY);
+                RectVector facesDetectadas = new RectVector();
+                detectorFace.detectMultiScale(imagemCinza, facesDetectadas, 1.1, 1, 0, new Size(150, 150), new Size(500, 500));
+                for (int i = 0; i < facesDetectadas.size(); i++) {
+                    Rect dadosFace = facesDetectadas.get(i);
+                    rectangle(imagemColorida, dadosFace, new Scalar(219, 152, 52, 0));
+                    Mat faceCapturada = new Mat(imagemCinza, dadosFace);
+                    resize(faceCapturada, faceCapturada, new Size(160, 160));
+
+                    IntPointer rotulo = new IntPointer(1);
+                    DoublePointer confianca = new DoublePointer(1);
+                    reconhecedor.predict(faceCapturada, rotulo, confianca);
+                    int predicao = rotulo.get(0);
+                    String nome = null;
+                    if (predicao == -1) {
+                        nome = "Desconhecido";
+                    } else {
+                        //nome = pessoas[predicao] + " - " + confianca.get(0);
+                        for (PessoaModel p : pessoas) {
+                            if (p.getId() == predicao) {
+                                nome = p.getNome();
+                            }
+                        }
+                    }
+                    int x = Math.max(dadosFace.tl().x() - 10, 0);
+                    int y = Math.max(dadosFace.tl().y() - 10, 0);
+                    putText(imagemColorida, nome, new Point(x, y), FONT_HERSHEY_PLAIN, 1.4, new Scalar(219, 152, 52, 0));
+                }
+                if (cFrame.isVisible()) {
+                    cFrame.showImage(frameCapturado);
+                }
+            }
+            cFrame.dispose();
+            camera.stop();
+
+        } catch (IOException e) {
+
+            System.out.println("Não foi possível encontrar o usuário da API.");
+        }
+    }
+    
+    public void reconhecerCameraIp() throws FrameGrabber.Exception, IOException {
+
+        Pessoa pessoa = new Pessoa(); 
+        String pessoasJson = pessoa.buscarPessoa();
+        
+        ReconhecimentoFacialFacade reconhecimentoFacialFacade = new ReconhecimentoFacialFacade();
+        String url = reconhecimentoFacialFacade.urlCameraIp();
+        
+        Type pessoaListType = new TypeToken<ArrayList<PessoaModel>>() {}.getType();
+
+        java.util.List<PessoaModel> pessoas = new Gson().fromJson(pessoasJson, pessoaListType);
+        
+        OpenCVFrameConverter.ToMat converteMat = new OpenCVFrameConverter.ToMat();
+        IPCameraFrameGrabber camera = new IPCameraFrameGrabber(url, 0, 0, TimeUnit.MINUTES);
+        camera.setFormat("mjpeg");
+
+        //String[] pessoas = {"", "", "", ""};
+        camera.start();
+
+        CascadeClassifier detectorFace = new CascadeClassifier("src/recursos/haarcascade-frontalface-alt.xml");
+
+        try {
+            Usuario usuario = new Usuario();
+            String idUsuario = usuario.usuarioGetId();
+
+            //FaceRecognizer reconhecedor = EigenFaceRecognizer.create();
+            //reconhecedor.read("src/recursos/classificadorEigenFaces.yml");
+            //reconhecedor.setThreshold(0);
+            //FaceRecognizer reconhecedor = FisherFaceRecognizer.create();
+            //reconhecedor.read("src/recursos/classificadorFisherFaces.yml");
+            FaceRecognizer reconhecedor = LBPHFaceRecognizer.create();
+            reconhecedor.read("src/recursos/"+ idUsuario + ".classificadorLBPH.yml");
+            reconhecedor.setThreshold(70);
+
+            CanvasFrame cFrame = new CanvasFrame("Reconhecimento", 1 / 1);
             Frame frameCapturado = null;
             Mat imagemColorida = new Mat();
 
